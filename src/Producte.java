@@ -1,3 +1,5 @@
+import java.util.Objects;
+
 public abstract class Producte {
     private double preu;
     private String nom;
@@ -27,5 +29,12 @@ public abstract class Producte {
 
     public String getCodiBarres() {
         return codiBarres;
+    }
+
+    @Override
+    public final boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Producte producte)) return false;
+        return Objects.equals(getCodiBarres(), producte.getCodiBarres());
     }
 }
