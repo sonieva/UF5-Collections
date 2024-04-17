@@ -23,34 +23,41 @@ public class Compra {
 
         System.out.println("Afegir " + tipusProducte);
 
-        System.out.println("Nom producte: ");
+        System.out.print("Nom producte: ");
         String nomProducte = sc.nextLine();
         nomProducte = nomProducte.substring(0, 1).toUpperCase() + nomProducte.substring(1);
 
-        System.out.println("Preu: ");
+        System.out.print("Preu: ");
         float preu = sc.nextFloat();
 
         String codiBarres;
         do {
-            System.out.println("Codi de barres (xxxxxx): ");
-            codiBarres = sc.nextLine();
-        } while (!(codiBarres.length() < 6));
+            System.out.print("Codi de barres (xxxxxx): ");
+            codiBarres = sc.next();
+
+            if (!(codiBarres.matches("\\w{6}"))) {
+                System.out.print("Codi de barres incorrecte. Torna a intentar.\n");
+            }
+        } while (!(codiBarres.matches("\\w{6}")));
 
         switch (tipusProducte) {
             case "Alimentacio" -> {
-                System.out.println("Data caducitat (dd/mm/aaaa): ");
-                LocalDate dataCaducitat = LocalDate.parse(sc.nextLine(), DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+                System.out.print("Data caducitat (dd/mm/aaaa): ");
+                LocalDate dataCaducitat = LocalDate.parse(sc.next(), DateTimeFormatter.ofPattern("dd/MM/yyyy"));
                 llistaAliments.add(new Alimentacio(preu,nomProducte,codiBarres,dataCaducitat));
+                break;
             }
             case "Textil" -> {
-                System.out.println("Composició: ");
+                System.out.print("Composició: ");
                 String composicio = sc.nextLine();
                 llistaTextils.add(new Textil(preu,nomProducte,codiBarres,composicio));
+                break;
             }
             case "Electronica" -> {
-                System.out.println("Dies garantia: ");
+                System.out.print("Dies garantia: ");
                 int diesGarantia = sc.nextInt();
                 llistaElectronics.add(new Electronica(preu,nomProducte,codiBarres,diesGarantia));
+                break;
             }
         }
     }
