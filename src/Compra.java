@@ -21,7 +21,7 @@ public class Compra {
 
         Scanner sc = new Scanner(System.in);
 
-        System.out.println("Afegir " + tipusProducte);
+        System.out.println("\nAfegir " + tipusProducte);
 
         System.out.print("Nom producte: ");
         String nomProducte = sc.nextLine();
@@ -49,13 +49,13 @@ public class Compra {
             }
             case "Textil" -> {
                 System.out.print("Composició: ");
-                String composicio = sc.nextLine();
+                String composicio = sc.next();
                 llistaTextils.add(new Textil(preu,nomProducte,codiBarres,composicio));
                 break;
             }
             case "Electronica" -> {
                 System.out.print("Dies garantia: ");
-                int diesGarantia = sc.nextInt();
+                int diesGarantia = Integer.parseInt(sc.next());
                 llistaElectronics.add(new Electronica(preu,nomProducte,codiBarres,diesGarantia));
                 break;
             }
@@ -74,11 +74,11 @@ public class Compra {
         Set<Electronica> electronics = new HashSet<>(llistaElectronics);
         electronics.forEach(llistaProductes::add);
 
-        System.out.println("-".repeat(15));
+        System.out.println('\n' + "-".repeat(20));
         System.out.println("SAPAMERCAT");
-        System.out.println("-".repeat(15));
+        System.out.println("-".repeat(20));
         System.out.println("Data: " + LocalDate.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
-        System.out.println("-".repeat(15));
+        System.out.println("-".repeat(20));
 
         for (Producte producte : llistaProductes) {
             int unitats = 0;
@@ -91,7 +91,7 @@ public class Compra {
                 unitats = Collections.frequency(llistaElectronics,producte);
             }
 
-            System.out.println(producte.getNom() + '\t' + unitats + '\t' + producte.getPreu() + '\t' + (unitats * producte.getPreu()));
+            System.out.println(producte.getNom() + "\t\t" + unitats + "\t\t" + producte.getPreu() + "\t\t" + (unitats * producte.getPreu()));
 
         }
 
@@ -101,7 +101,7 @@ public class Compra {
     }
 
     public void mostarCarret() {
-        System.out.println("Carret");
+        System.out.println("\nCarret");
 
         List<Producte> llistaProductes = new ArrayList<>();
         Map<String, Integer> carret = new HashMap<>();
