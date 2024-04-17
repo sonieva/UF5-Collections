@@ -1,5 +1,6 @@
 import java.time.Duration;
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 
 public class Alimentacio extends Producte {
     private LocalDate dataCaducitat;
@@ -15,6 +16,6 @@ public class Alimentacio extends Producte {
 
     @Override
     public float getPreu() {
-        return (float) (super.getPreu() - super.getPreu() * (1 / (Duration.between(this.getDataCaducitat(), LocalDate.now()).toDays() + 1)) + (super.getPreu() * 0.1));
+        return (float) ((super.getPreu() - super.getPreu() * ((float) 1 / (getDataCaducitat().until(LocalDate.now(), ChronoUnit.DAYS)) + 1)) + (super.getPreu() * 0.1));
     }
 }
