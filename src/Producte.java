@@ -35,6 +35,8 @@ public abstract class Producte {
     public final boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof Producte producte)) return false;
+
         return Objects.equals(getCodiBarres(), producte.getCodiBarres());
     }
+
 }
