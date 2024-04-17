@@ -39,4 +39,8 @@ public abstract class Producte {
         return Objects.equals(getCodiBarres(), producte.getCodiBarres());
     }
 
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(getCodiBarres());
+    }
 }
