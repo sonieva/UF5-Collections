@@ -92,4 +92,26 @@ public class Compra {
         llistaElectronics.clear();
     }
 
+    public void mostarCarret() {
+        System.out.println("Carret");
+
+        List<Producte> llistaProductes = new ArrayList<>();
+        Map<String, Integer> carret = new HashMap<>();
+
+        llistaAliments.forEach(llistaProductes::add);
+        llistaTextils.forEach(llistaProductes::add);
+        llistaElectronics.forEach(llistaProductes::add);
+
+        for (Producte producte : llistaProductes) {
+            if (carret.containsKey(producte.getCodiBarres())) {
+                carret.put(producte.getCodiBarres(), carret.get(producte.getCodiBarres()) + 1);
+            } else {
+                carret.put(producte.getCodiBarres(), 1);
+            }
+        }
+
+        carret.forEach((k, v) -> System.out.println(k + ": " + v));
+        carret.clear();
+    }
+
 }
