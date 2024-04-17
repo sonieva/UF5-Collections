@@ -1,6 +1,7 @@
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
+import java.util.stream.Stream;
 
 public class Compra {
     private List<Alimentacio> llistaAliments;
@@ -112,6 +113,18 @@ public class Compra {
 
         carret.forEach((k, v) -> System.out.println(k + ": " + v));
         carret.clear();
+    }
+
+    private String buscarProducte(String codiBarres) {
+        Stream<Producte> streamProductes = Stream.concat(
+                Stream.concat(llistaAliments.stream(), llistaTextils.stream()),
+                llistaElectronics.stream());
+
+        Optional<Producte> producte = streamProductes
+                .filter(producto -> producto.getCodiBarres().equals(codiBarres))
+                .findFirst();
+
+        return producte.get().getNom();
     }
 
 }
