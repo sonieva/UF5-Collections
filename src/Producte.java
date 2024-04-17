@@ -36,7 +36,7 @@ public abstract class Producte {
         if (this == o) return true;
         if (!(o instanceof Producte producte)) return false;
 
-        return Objects.equals(getCodiBarres(), producte.getCodiBarres());
+        return Objects.equals(getCodiBarres(), producte.getCodiBarres()) && Objects.equals(getPreu(), producte.getPreu());
     }
 
     @Override
