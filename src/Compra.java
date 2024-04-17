@@ -111,7 +111,7 @@ public class Compra {
             }
         }
 
-        carret.forEach((k, v) -> System.out.println(k + ": " + v));
+        carret.forEach((k, v) -> System.out.println(buscarProducte(k) + ": " + v));
         carret.clear();
     }
 
