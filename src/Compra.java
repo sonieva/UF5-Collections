@@ -55,9 +55,41 @@ public class Compra {
     }
 
     public void passarPerCaixa() {
+        List<Producte> llistaProductes = new ArrayList<>();
+
         Set<Alimentacio> aliments = new HashSet<>(llistaAliments);
+        aliments.forEach(llistaProductes::add);
+
         Set<Textil> textils = new HashSet<>(llistaTextils);
+        textils.forEach(llistaProductes::add);
+
         Set<Electronica> electronics = new HashSet<>(llistaElectronics);
+        electronics.forEach(llistaProductes::add);
+
+        System.out.println("-".repeat(15));
+        System.out.println("SAPAMERCAT");
+        System.out.println("-".repeat(15));
+        System.out.println("Data: " + LocalDate.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
+        System.out.println("-".repeat(15));
+
+        for (Producte producte : llistaProductes) {
+            int unitats = 0;
+
+            if (producte instanceof Alimentacio) {
+                unitats = Collections.frequency(llistaAliments, producte);
+            } else if (producte instanceof Textil) {
+                unitats = Collections.frequency(llistaTextils,producte);
+            } else if (producte instanceof Electronica) {
+                unitats = Collections.frequency(llistaElectronics,producte);
+            }
+
+            System.out.println(producte.getNom() + '\t' + unitats + '\t' + producte.getPreu() + '\t' + (unitats * producte.getPreu()));
+
+        }
+
+        llistaAliments.clear();
+        llistaTextils.clear();
+        llistaElectronics.clear();
     }
 
 }
