@@ -1,20 +1,20 @@
 import java.time.Duration;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 public class Alimentacio extends Producte {
-    private LocalDateTime dataCaducitat;
+    private LocalDate dataCaducitat;
 
-    public Alimentacio(double preu, String nom, String codiBarres, LocalDateTime dataCaducitat) {
+    public Alimentacio(float preu, String nom, String codiBarres, LocalDate dataCaducitat) {
         super(preu, nom, codiBarres);
         this.dataCaducitat = dataCaducitat;
     }
 
-    public LocalDateTime getDataCaducitat() {
+    public LocalDate getDataCaducitat() {
         return dataCaducitat;
     }
 
     @Override
-    public double getPreu() {
-        return super.getPreu() - super.getPreu() * ((double) 1 / (Duration.between(this.getDataCaducitat(), LocalDateTime.now()).toDays() + 1)) + (super.getPreu() * 0.1);
+    public float getPreu() {
+        return (float) (super.getPreu() - super.getPreu() * (1 / (Duration.between(this.getDataCaducitat(), LocalDate.now()).toDays() + 1)) + (super.getPreu() * 0.1));
     }
 }

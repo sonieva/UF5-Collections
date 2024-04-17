@@ -1,21 +1,21 @@
 import java.util.Objects;
 
 public abstract class Producte {
-    private double preu;
+    private float preu;
     private String nom;
     private String codiBarres;
 
-    public Producte(double preu, String nom, String codiBarres) {
+    public Producte(float preu, String nom, String codiBarres) {
         this.preu = preu;
         this.nom = nom;
         this.codiBarres = codiBarres;
     }
 
-    public double getPreu() {
+    public float getPreu() {
         return preu;
     }
 
-    public void setPreu(double preu) {
+    public void setPreu(float preu) {
         this.preu = preu;
     }
 

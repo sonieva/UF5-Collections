@@ -1,7 +1,7 @@
 public class Electronica extends Producte {
     private int diesGarantia;
 
-    public Electronica(double preu, String nom, String codiBarres, int diesGarantia) {
+    public Electronica(float preu, String nom, String codiBarres, int diesGarantia) {
         super(preu, nom, codiBarres);
         this.diesGarantia = diesGarantia;
     }
@@ -11,7 +11,7 @@ public class Electronica extends Producte {
     }
 
     @Override
-    public double getPreu() {
-        return super.getPreu() + super.getPreu() * ((double) this.getDiesGarantia() / 365) * 0.1;
+    public float getPreu() {
+        return (float) (super.getPreu() + super.getPreu() * (this.getDiesGarantia() / 365) * 0.1);
     }
 }
