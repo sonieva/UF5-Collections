@@ -21,14 +21,19 @@ public class Compra {
         Scanner sc = new Scanner(System.in);
 
         System.out.println("Afegir " + tipusProducte);
+
         System.out.println("Nom producte: ");
         String nomProducte = sc.nextLine();
+        nomProducte = nomProducte.substring(0, 1).toUpperCase() + nomProducte.substring(1);
 
         System.out.println("Preu: ");
         float preu = sc.nextFloat();
 
-        System.out.println("Codi de barres (xxxxxx): ");
-        String codiBarres = sc.nextLine();
+        String codiBarres;
+        do {
+            System.out.println("Codi de barres (xxxxxx): ");
+            codiBarres = sc.nextLine();
+        } while (!(codiBarres.length() < 6));
 
         switch (tipusProducte) {
             case "Alimentacio" -> {
@@ -47,6 +52,12 @@ public class Compra {
                 llistaElectronics.add(new Electronica(preu,nomProducte,codiBarres,diesGarantia));
             }
         }
+    }
+
+    public void passarPerCaixa() {
+        Set<Alimentacio> aliments = new HashSet<>(llistaAliments);
+        Set<Textil> textils = new HashSet<>(llistaTextils);
+        Set<Electronica> electronics = new HashSet<>(llistaElectronics);
     }
 
 }
