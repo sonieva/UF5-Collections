@@ -101,8 +101,6 @@ public class Compra {
     }
 
     public void mostarCarret() {
-        System.out.println("\nCarret");
-
         List<Producte> llistaProductes = new ArrayList<>();
         Map<String, Integer> carret = new HashMap<>();
 

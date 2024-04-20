@@ -58,6 +58,7 @@ public class Main {
                     compra.passarPerCaixa();
                     break;
                 case 3:
+                    System.out.println("\nCarret");
                     compra.mostarCarret();
                     break;
                 case 0:
