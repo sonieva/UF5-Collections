@@ -125,12 +125,12 @@ public class Compra {
                 Stream.concat(llistaAliments.stream(), llistaTextils.stream()),
                 llistaElectronics.stream());
 
-        Optional<Producte> producte = streamProductes
-                .filter(producto -> producto.getCodiBarres().equals(codiBarres))
+        Optional<Producte> producteTrobat = streamProductes
+                .filter(producte -> producte.getCodiBarres().equals(codiBarres))
                 .findFirst();
 
-        if (producte.isPresent()) {
-            return producte.get().getNom();
+        if (producteTrobat.isPresent()) {
+            return producteTrobat.get().getNom();
         } else {
             return "No s'ha trobat el producte";
         }
