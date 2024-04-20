@@ -62,7 +62,6 @@ public class Main {
                     break;
                 case 0:
                     System.out.println("Programa finalitzat");
-                    break;
                 default: break;
             }
         } while (op != 0);
