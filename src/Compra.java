@@ -9,9 +9,9 @@ public class Compra {
     private List<Electronica> llistaElectronics;
 
     public Compra() {
-        this.llistaAliments = new ArrayList<>();
-        this.llistaTextils = new ArrayList<>();
-        this.llistaElectronics = new ArrayList<>();
+        this.llistaAliments = new ArrayList<>(100);
+        this.llistaTextils = new ArrayList<>(100);
+        this.llistaElectronics = new ArrayList<>(100);
     }
 
     public void afegirProducte(String tipusProducte) throws Exception {
@@ -131,7 +131,11 @@ public class Compra {
                 .filter(producto -> producto.getCodiBarres().equals(codiBarres))
                 .findFirst();
 
-        return producte.get().getNom();
+        if (producte.isPresent()) {
+            return producte.get().getNom();
+        } else {
+            return "No s'ha trobat el producte";
+        }
     }
 
 }
