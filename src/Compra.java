@@ -1,3 +1,5 @@
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
@@ -53,12 +55,12 @@ public class Compra {
         String codiBarres;
         do {
             System.out.print("Codi de barres (6 caracters): ");
-            codiBarres = sc.next();
+            codiBarres = sc.next().toUpperCase();
 
-            if (!(codiBarres.matches("\\w{6}"))) {
+            if (!(codiBarres.matches("[A-Z0-9]{6}"))) {
                 System.out.print("Codi de barres incorrecte. Torna a intentar.\n");
             }
-        } while (!(codiBarres.matches("\\w{6}")));
+        } while (!(codiBarres.matches("[A-Z0-9]{6}")));
 
         switch (tipusProducte) {
             case "Alimentacio" -> {
@@ -102,6 +104,7 @@ public class Compra {
 
         for (Producte producte : llistaProductes) {
             int unitats = 0;
+            comprovarPreu(producte);
 
             if (producte instanceof Alimentacio) {
                 unitats = Collections.frequency(llistaAliments, producte);
@@ -153,6 +156,34 @@ public class Compra {
             return producteTrobat.get().getNom();
         } else {
             return "No s'ha trobat el producte";
+        }
+    }
+
+    private void comprovarPreu(Producte producte) {
+        File arxiu = new File("../updates/UpdateTextilPrices.dat");;
+
+        if (producte instanceof Alimentacio) {
+            //arxiu = new File("../updates/UpdateAlimentacioPrices.dat");
+        } else if (producte instanceof Textil) {
+            arxiu = new File("../updates/UpdateTextilPrices.dat");
+        } else if (producte instanceof Electronica) {
+            //arxiu = new File("../updates/UpdateElectronicaPrices.dat");
+        }
+
+        Scanner scArxiu = null;
+        try {
+            scArxiu = new Scanner(arxiu);
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+
+        while (scArxiu.hasNextLine()) {
+            String codiBarres = scArxiu.nextLine().split(",")[0];
+            String preuCorrecte = scArxiu.nextLine().split(",")[1];
+
+            if (codiBarres.equals(producte.getCodiBarres())) {
+                producte.setPreu(Float.parseFloat(preuCorrecte));
+            }
         }
     }
 
