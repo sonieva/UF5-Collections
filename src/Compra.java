@@ -23,16 +23,36 @@ public class Compra {
 
         System.out.println("\nAfegir " + tipusProducte);
 
-        System.out.print("Nom producte: ");
-        String nomProducte = sc.nextLine();
-        nomProducte = nomProducte.substring(0, 1).toUpperCase() + nomProducte.substring(1);
+        String nomProducte;
 
-        System.out.print("Preu: ");
-        float preu = sc.nextFloat();
+        do {
+            System.out.print("Nom producte: ");
+            nomProducte = sc.nextLine();
+
+            if (!(nomProducte.matches("[a-zA-Z]+"))) {
+                System.out.println("Nom incorrecte. Torna a intentar.\n");
+            }
+        } while (!(nomProducte.matches("[a-zA-Z]+")));
+
+        nomProducte = nomProducte.substring(0, 1).toUpperCase() + nomProducte.substring(1).toLowerCase();
+
+        float preu;
+        do {
+            System.out.print("Preu: ");
+            if (!(sc.hasNextFloat())) {
+                System.out.println("Preu incorrecte. Torna a intentar.\n");
+            }
+
+            preu = sc.nextFloat();
+
+            if (preu <= 0) {
+                System.out.println("Preu no pot ser inferior a 0. Torna a intentar.\n");
+            }
+        } while (preu <= 0);
 
         String codiBarres;
         do {
-            System.out.print("Codi de barres (xxxxxx): ");
+            System.out.print("Codi de barres (6 caracters): ");
             codiBarres = sc.next();
 
             if (!(codiBarres.matches("\\w{6}"))) {
@@ -44,19 +64,19 @@ public class Compra {
             case "Alimentacio" -> {
                 System.out.print("Data caducitat (dd/mm/aaaa): ");
                 LocalDate dataCaducitat = LocalDate.parse(sc.next(), DateTimeFormatter.ofPattern("dd/MM/yyyy"));
-                llistaAliments.add(new Alimentacio(preu,nomProducte,codiBarres,dataCaducitat));
+                llistaAliments.add(new Alimentacio(preu, nomProducte, codiBarres, dataCaducitat));
                 break;
             }
             case "Textil" -> {
                 System.out.print("Composició: ");
                 String composicio = sc.next();
-                llistaTextils.add(new Textil(preu,nomProducte,codiBarres,composicio));
+                llistaTextils.add(new Textil(preu, nomProducte, codiBarres, composicio));
                 break;
             }
             case "Electronica" -> {
                 System.out.print("Dies garantia: ");
                 int diesGarantia = Integer.parseInt(sc.next());
-                llistaElectronics.add(new Electronica(preu,nomProducte,codiBarres,diesGarantia));
+                llistaElectronics.add(new Electronica(preu, nomProducte, codiBarres, diesGarantia));
                 break;
             }
         }
