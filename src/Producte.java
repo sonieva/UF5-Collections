@@ -3,12 +3,12 @@ import java.util.Objects;
 public abstract class Producte {
     private float preu;
     private String nom;
-    private String codiBarres;
+    private final String CODIBARRES;
 
     public Producte(float preu, String nom, String codiBarres) {
         this.preu = preu;
         this.nom = nom;
-        this.codiBarres = codiBarres;
+        this.CODIBARRES = codiBarres;
     }
 
     public float getPreu() {
@@ -28,7 +28,7 @@ public abstract class Producte {
     }
 
     public String getCodiBarres() {
-        return codiBarres;
+        return CODIBARRES;
     }
 
     @Override
