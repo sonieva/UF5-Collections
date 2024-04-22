@@ -8,7 +8,7 @@ public class Main {
         Compra compra = new Compra();
 
         do {
-            System.out.println("\nBENVINGUT AL SAPAMERCAT\n");
+            System.out.println("\nBENVINGUT AL SAPAMERCAT");
             System.out.println("-".repeat(15));
             System.out.println("-".repeat(4) + " INICI " + "-".repeat(4));
             System.out.println("-".repeat(15));
