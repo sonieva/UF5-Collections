@@ -1,7 +1,7 @@
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.time.LocalDate;
+import java.io.*;
+import java.time.*;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.*;
 import java.util.stream.Stream;
 
@@ -18,69 +18,76 @@ public class Compra {
 
     public void afegirProducte(String tipusProducte) throws Exception {
         if (llistaElectronics.size() + llistaTextils.size() + llistaAliments.size() == 100) {
-            throw new Exception("No es poden afegir mes de 100 productes");
+            registrarLog("No es poden afegir mes de 100 productes");
         }
 
         Scanner sc = new Scanner(System.in);
-
         System.out.println("\nAfegir " + tipusProducte);
 
-        String nomProducte;
+        System.out.print("Nom producte: ");
+        String nomProducte = sc.nextLine();
 
-        do {
-            System.out.print("Nom producte: ");
-            nomProducte = sc.nextLine();
+        if (nomProducte.length() >= 15) registrarLog("El nom no pot superar els 15 caracters");
 
-            if (!(nomProducte.matches("[a-zA-Z]+"))) {
-                System.out.println("Nom incorrecte. Torna a intentar.\n");
-            }
-        } while (!(nomProducte.matches("[a-zA-Z]+")));
+        if (!(nomProducte.matches("[a-zA-Z]+"))) registrarLog("Nom incorrecte: " + nomProducte);
 
         nomProducte = nomProducte.substring(0, 1).toUpperCase() + nomProducte.substring(1).toLowerCase();
 
-        float preu;
-        do {
-            System.out.print("Preu: ");
-            preu = sc.nextFloat();
+        System.out.print("Preu: ");
+        String preuString = sc.next();
 
-            if (preu <= 0) {
-                System.out.println("Preu no pot ser inferior a 0. Torna a intentar.\n");
-            }
-        } while (preu <= 0);
+        float preu = 0;
+        try {
+            preu = Float.parseFloat(preuString);
+        } catch (NumberFormatException e) {
+            registrarLog("Preu incorrecte: " + preuString);
+        }
 
-        String codiBarres;
-        do {
-            System.out.print("Codi de barres (6 caracters): ");
-            codiBarres = sc.next().toUpperCase();
+        if (preu <= 0) registrarLog("Preu no pot ser inferior a 0");
 
-            if (!(codiBarres.matches("[A-Z0-9]{6}"))) {
-                System.out.print("Codi de barres incorrecte. Torna a intentar.\n");
-            }
-        } while (!(codiBarres.matches("[A-Z0-9]{6}")));
+        System.out.print("Codi de barres (6 caracters): ");
+        String codiBarres = sc.next().toUpperCase();
+
+        if (!(codiBarres.matches("[A-Z0-9]{6}"))) registrarLog("Codi de barres incorrecte: " + codiBarres);
 
         switch (tipusProducte) {
             case "Alimentacio" -> {
                 System.out.print("Data caducitat (dd/mm/aaaa): ");
-                LocalDate dataCaducitat = LocalDate.parse(sc.next(), DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+                String data = sc.next();
+
+                LocalDate dataCaducitat = null;
+                try {
+                    dataCaducitat = LocalDate.parse(data, DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+                } catch (DateTimeParseException e) {
+                    registrarLog("Data introduida incorrecte: " + data);
+                }
                 llistaAliments.add(new Alimentacio(preu, nomProducte, codiBarres, dataCaducitat));
                 break;
             }
             case "Textil" -> {
                 System.out.print("Composició: ");
                 String composicio = sc.next();
+
+                if (!composicio.matches("[A-Z][a-z]+")) registrarLog("Composicio incorrecte: " + composicio);
                 llistaTextils.add(new Textil(preu, nomProducte, codiBarres, composicio));
                 break;
             }
             case "Electronica" -> {
                 System.out.print("Dies garantia: ");
-                int diesGarantia = Integer.parseInt(sc.next());
+                String diesString = sc.next();
+                int diesGarantia = 0;
+                try {
+                    diesGarantia = Integer.parseInt(diesString);
+                } catch (NumberFormatException e) {
+                    registrarLog("Dies de garantia incorrecte: " + diesString);
+                }
                 llistaElectronics.add(new Electronica(preu, nomProducte, codiBarres, diesGarantia));
                 break;
             }
         }
     }
 
-    public void passarPerCaixa() throws FileNotFoundException {
+    public void passarPerCaixa() throws Exception {
         List<Producte> llistaProductes = new ArrayList<>();
 
         Set<Alimentacio> aliments = new HashSet<>(llistaAliments);
@@ -92,13 +99,13 @@ public class Compra {
         Set<Electronica> electronics = new HashSet<>(llistaElectronics);
         electronics.forEach(llistaProductes::add);
 
-        System.out.println('\n' + "-".repeat(20));
-        System.out.println("SAPAMERCAT");
-        System.out.println("-".repeat(20));
-        System.out.println("Data: " + LocalDate.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
-        System.out.println("-".repeat(20));
+        if (!llistaProductes.isEmpty()) {
+            System.out.println('\n' + "-".repeat(20));
+            System.out.println("SAPAMERCAT");
+            System.out.println("-".repeat(20));
+            System.out.println("Data: " + LocalDate.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
+            System.out.println("-".repeat(20));
 
-        if (!(llistaProductes.isEmpty())) {
             for (Producte producte : llistaProductes) {
                 int unitats = 0;
 
@@ -118,7 +125,8 @@ public class Compra {
             llistaAliments.clear();
             llistaTextils.clear();
             llistaElectronics.clear();
-        } else System.out.println("El carret esta buit!");
+
+        } else registrarLog("El carret no pot estar buit");
     }
 
     public void mostarCarret() {
@@ -157,19 +165,52 @@ public class Compra {
         }
     }
 
-    private void comprovarPreuTextil(Producte producte) throws FileNotFoundException {
-        Scanner scArxiu = new Scanner(new File("./updates/UpdateTextilPrices.dat"));
+    private void comprovarPreuTextil(Producte producte) throws Exception {
+        try {
+            Scanner arxiuPreusTextil = new Scanner(new File("./updates/UpdateTextilPrices.dat"));
 
-        while (scArxiu.hasNextLine()) {
-            String linia = scArxiu.nextLine();
-            String codiBarres = linia.split(";")[0];
-            String preuCorrecte = linia.split(";")[1];
+            while (arxiuPreusTextil.hasNextLine()) {
+                String linia = arxiuPreusTextil.nextLine();
+                String codiBarres = linia.split(";")[0];
+                String preuCorrecte = linia.split(";")[1];
 
-            if (codiBarres.equals(producte.getCodiBarres())) {
-                producte.setPreu(Float.parseFloat(preuCorrecte));
-                break;
+                if (codiBarres.equals(producte.getCodiBarres())) {
+                    producte.setPreu(Float.parseFloat(preuCorrecte));
+                    arxiuPreusTextil.close();
+                    break;
+                }
             }
+
+        } catch (FileNotFoundException e) {
+            registrarLog("L'arxiu de preus de textil no s'ha trobat");
         }
     }
 
+    private void registrarLog(String missatge) throws Exception {
+        File directoriLogs = new File("./logs");
+        File arxiuLogs = new File("./logs/Exceptions.log");
+
+        if (!directoriLogs.exists()) {
+            directoriLogs.mkdirs();
+        }
+
+        if (!arxiuLogs.exists()) {
+            try {
+                arxiuLogs.createNewFile();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        } else {
+            try {
+                FileWriter escritorArxiuLogs = new FileWriter(arxiuLogs,true);
+                escritorArxiuLogs.write(LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss")) + " - " + missatge + '\n');
+                escritorArxiuLogs.close();
+                throw new Exception("S'ha produit un error. Revisa el fitxer de logs");
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+
+    }
 }
