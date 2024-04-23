@@ -1,3 +1,4 @@
+import java.util.Comparator;
 import java.util.Objects;
 
 public abstract class Producte {
@@ -42,5 +43,12 @@ public abstract class Producte {
     @Override
     public int hashCode() {
         return Objects.hashCode(getCodiBarres());
+    }
+
+    public static class ComparadorNom implements Comparator<Producte> {
+        @Override
+        public int compare(Producte p1, Producte p2) {
+            return p1.getNom().compareTo(p2.getNom());
+        }
     }
 }
