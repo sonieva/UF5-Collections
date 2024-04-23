@@ -1,3 +1,5 @@
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.Scanner;
 
 public class Main {
@@ -55,7 +57,11 @@ public class Main {
                     } while (op2 != 0);
                     break;
                 case 2:
-                    compra.passarPerCaixa();
+                    try {
+                        compra.passarPerCaixa();
+                    } catch (FileNotFoundException e) {
+                        System.out.println("No s'ha pogut encontrar la ruta de l'arxiu de preus: " + e.getMessage().split(" ")[0]);
+                    }
                     break;
                 case 3:
                     System.out.println("\nCarret");

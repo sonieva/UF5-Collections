@@ -41,10 +41,6 @@ public class Compra {
         float preu;
         do {
             System.out.print("Preu: ");
-            if (!(sc.hasNextFloat())) {
-                System.out.println("Preu incorrecte. Torna a intentar.\n");
-            }
-
             preu = sc.nextFloat();
 
             if (preu <= 0) {
@@ -84,7 +80,7 @@ public class Compra {
         }
     }
 
-    public void passarPerCaixa() {
+    public void passarPerCaixa() throws FileNotFoundException {
         List<Producte> llistaProductes = new ArrayList<>();
 
         Set<Alimentacio> aliments = new HashSet<>(llistaAliments);
@@ -102,25 +98,27 @@ public class Compra {
         System.out.println("Data: " + LocalDate.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
         System.out.println("-".repeat(20));
 
-        for (Producte producte : llistaProductes) {
-            int unitats = 0;
-            comprovarPreu(producte);
+        if (!(llistaProductes.isEmpty())) {
+            for (Producte producte : llistaProductes) {
+                int unitats = 0;
 
-            if (producte instanceof Alimentacio) {
-                unitats = Collections.frequency(llistaAliments, producte);
-            } else if (producte instanceof Textil) {
-                unitats = Collections.frequency(llistaTextils,producte);
-            } else if (producte instanceof Electronica) {
-                unitats = Collections.frequency(llistaElectronics,producte);
+                if (producte instanceof Alimentacio) {
+                    unitats = Collections.frequency(llistaAliments, producte);
+                } else if (producte instanceof Textil) {
+                    comprovarPreuTextil(producte);
+                    unitats = Collections.frequency(llistaTextils,producte);
+                } else if (producte instanceof Electronica) {
+                    unitats = Collections.frequency(llistaElectronics,producte);
+                }
+
+                System.out.println(producte.getNom() + "\t\t" + unitats + "\t\t" + producte.getPreu() + "\t\t" + (unitats * producte.getPreu()));
+
             }
 
-            System.out.println(producte.getNom() + "\t\t" + unitats + "\t\t" + producte.getPreu() + "\t\t" + (unitats * producte.getPreu()));
-
-        }
-
-        llistaAliments.clear();
-        llistaTextils.clear();
-        llistaElectronics.clear();
+            llistaAliments.clear();
+            llistaTextils.clear();
+            llistaElectronics.clear();
+        } else System.out.println("El carret esta buit!");
     }
 
     public void mostarCarret() {
@@ -159,30 +157,17 @@ public class Compra {
         }
     }
 
-    private void comprovarPreu(Producte producte) {
-        File arxiu = new File("../updates/UpdateTextilPrices.dat");;
-
-        if (producte instanceof Alimentacio) {
-            //arxiu = new File("../updates/UpdateAlimentacioPrices.dat");
-        } else if (producte instanceof Textil) {
-            arxiu = new File("../updates/UpdateTextilPrices.dat");
-        } else if (producte instanceof Electronica) {
-            //arxiu = new File("../updates/UpdateElectronicaPrices.dat");
-        }
-
-        Scanner scArxiu = null;
-        try {
-            scArxiu = new Scanner(arxiu);
-        } catch (FileNotFoundException e) {
-            throw new RuntimeException(e);
-        }
+    private void comprovarPreuTextil(Producte producte) throws FileNotFoundException {
+        Scanner scArxiu = new Scanner(new File("./updates/UpdateTextilPrices.dat"));
 
         while (scArxiu.hasNextLine()) {
-            String codiBarres = scArxiu.nextLine().split(",")[0];
-            String preuCorrecte = scArxiu.nextLine().split(",")[1];
+            String linia = scArxiu.nextLine();
+            String codiBarres = linia.split(";")[0];
+            String preuCorrecte = linia.split(";")[1];
 
             if (codiBarres.equals(producte.getCodiBarres())) {
                 producte.setPreu(Float.parseFloat(preuCorrecte));
+                break;
             }
         }
     }
