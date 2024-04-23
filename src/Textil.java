@@ -16,4 +16,13 @@ public class Textil extends Producte implements Comparable<Textil> {
     public int compareTo(Textil t1) {
         return this.getComposicio().compareTo(t1.getComposicio());
     }
+
+    @Override
+    public final boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Textil textil)) return false;
+        if (!super.equals(o)) return false;
+
+        return Objects.equals(getCodiBarres(), textil.getCodiBarres());
+    }
 }
