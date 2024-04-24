@@ -256,12 +256,10 @@ public class Compra {
 
         for (int i = 0; i < (100 - midaCarret); i++) {
             StringBuilder builderCodiBarres = new StringBuilder();
-            for (int j = 0; j <= 6; j++) {
-                builderCodiBarres.append(caracters.charAt(random.nextInt(caracters.length())));
-            }
+            for (int j = 0; j <= 6; j++) builderCodiBarres.append(caracters.charAt(random.nextInt(caracters.length())));
             String codiBarresAleatori = builderCodiBarres.toString();
 
-            int tipusProducte = random.nextInt(1,4);
+            int tipusProducte = random.nextInt(1,3) + 1;
 
             switch (tipusProducte) {
                 case 1:
