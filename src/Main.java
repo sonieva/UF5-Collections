@@ -18,6 +18,7 @@ public class Main {
                 System.out.println("1. Introduir producte");
                 System.out.println("2. Passar per caixa");
                 System.out.println("3. Mostrar carret de compra");
+                System.out.println("4. Omplir carret");
                 System.out.println("0. Sortir");
                 op = sc.nextInt();
                 switch (op) {
@@ -49,8 +50,10 @@ public class Main {
                         compra.passarPerCaixa();
                         break;
                     case 3:
-                        System.out.println("\nCarret");
                         compra.mostarCarret();
+                        break;
+                    case 4:
+                        compra.omplirCarret();
                         break;
                     case 0:
                         System.out.println("Programa finalitzat");
