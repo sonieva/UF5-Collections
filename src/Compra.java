@@ -6,18 +6,20 @@ import java.util.*;
 import java.util.stream.Stream;
 
 public class Compra {
+    private List<Producte> llistaProductes;
     private List<Alimentacio> llistaAliments;
     private List<Textil> llistaTextils;
     private List<Electronica> llistaElectronics;
 
     public Compra() {
+        this.llistaProductes = new ArrayList<>();
         this.llistaAliments = new ArrayList<>();
         this.llistaTextils = new ArrayList<>();
         this.llistaElectronics = new ArrayList<>();
     }
 
     public void afegirProducte(String tipusProducte) throws Exception {
-        if (llistaElectronics.size() + llistaTextils.size() + llistaAliments.size() == 100) {
+        if (llistaProductes.size() == 100) {
             registrarLog("No es poden afegir mes de 100 productes");
         }
 
@@ -50,6 +52,7 @@ public class Compra {
 
         if (!(codiBarres.matches("[A-Z0-9]{6}"))) registrarLog("Codi de barres incorrecte: " + codiBarres);
 
+        Producte producte = null;
         switch (tipusProducte) {
             case "Alimentacio" -> {
                 System.out.print("Data caducitat (dd/mm/aaaa): ");
@@ -61,7 +64,9 @@ public class Compra {
                 } catch (DateTimeParseException e) {
                     registrarLog("Data introduida incorrecte: " + data);
                 }
-                llistaAliments.add(new Alimentacio(preu, nomProducte, codiBarres, dataCaducitat));
+
+                producte = new Alimentacio(preu, nomProducte, codiBarres, dataCaducitat);
+                llistaAliments.add((Alimentacio) producte);
                 break;
             }
             case "Textil" -> {
@@ -69,44 +74,50 @@ public class Compra {
                 String composicio = sc.next();
 
                 if (!composicio.matches("[A-Z][a-z]+")) registrarLog("Composicio incorrecte: " + composicio);
-                llistaTextils.add(new Textil(preu, nomProducte, codiBarres, composicio));
+
+                producte = new Textil(preu, nomProducte, codiBarres, composicio);
+                llistaTextils.add((Textil) producte);
                 break;
             }
             case "Electronica" -> {
                 System.out.print("Dies garantia: ");
                 String diesString = sc.next();
+
                 int diesGarantia = 0;
                 try {
                     diesGarantia = Integer.parseInt(diesString);
                 } catch (NumberFormatException e) {
                     registrarLog("Dies de garantia incorrecte: " + diesString);
                 }
-                llistaElectronics.add(new Electronica(preu, nomProducte, codiBarres, diesGarantia));
+
+                producte = new Electronica(preu, nomProducte, codiBarres, diesGarantia);
+                llistaElectronics.add((Electronica) producte);
                 break;
             }
         }
+        llistaProductes.add(producte);
     }
 
     public void passarPerCaixa() throws Exception {
-        List<Producte> llistaProductes = new ArrayList<>();
+        List<Producte> llistaProductesUnics = new ArrayList<>();
 
         Set<Alimentacio> aliments = new HashSet<>(llistaAliments);
-        aliments.forEach(llistaProductes::add);
+        aliments.forEach(llistaProductesUnics::add);
 
         Set<Textil> textils = new HashSet<>(llistaTextils);
-        textils.forEach(llistaProductes::add);
+        textils.forEach(llistaProductesUnics::add);
 
         Set<Electronica> electronics = new HashSet<>(llistaElectronics);
-        electronics.forEach(llistaProductes::add);
+        electronics.forEach(llistaProductesUnics::add);
 
-        if (!llistaProductes.isEmpty()) {
+        if (!llistaProductesUnics.isEmpty()) {
             System.out.println('\n' + "-".repeat(20));
             System.out.println("SAPAMERCAT");
             System.out.println("-".repeat(20));
             System.out.println("Data: " + LocalDate.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
             System.out.println("-".repeat(20));
 
-            for (Producte producte : llistaProductes) {
+            for (Producte producte : llistaProductesUnics) {
                 int unitats = 0;
 
                 if (producte instanceof Alimentacio) {
@@ -130,12 +141,7 @@ public class Compra {
     }
 
     public void mostarCarret() throws Exception {
-        List<Producte> llistaProductes = new ArrayList<>();
         Map<String, Integer> carret = new HashMap<>();
-
-        llistaAliments.forEach(llistaProductes::add);
-        llistaTextils.forEach(llistaProductes::add);
-        llistaElectronics.forEach(llistaProductes::add);
 
         if (!llistaProductes.isEmpty()) {
             System.out.println("\nCarret\n");
@@ -154,11 +160,7 @@ public class Compra {
     }
 
     private String buscarProducte(String codiBarres) {
-        Stream<Producte> streamProductes = Stream.concat(
-                Stream.concat(llistaAliments.stream(), llistaTextils.stream()),
-                llistaElectronics.stream());
-
-        Optional<Producte> producteTrobat = streamProductes
+        Optional<Producte> producteTrobat = llistaProductes.stream()
                 .filter(producte -> producte.getCodiBarres().equals(codiBarres))
                 .findFirst();
 
@@ -261,26 +263,31 @@ public class Compra {
 
             int tipusProducte = random.nextInt(1,3) + 1;
 
+            Producte producte = null;
             switch (tipusProducte) {
                 case 1:
                     LocalDate dataAleatoria = LocalDate.of(random.nextInt(3000) + 1,random.nextInt(12) + 1,random.nextInt(28) + 1);
                     nomAleatori = nomsAlimentacio.get(random.nextInt(nomsAlimentacio.size()));
                     preuAleatori = random.nextFloat(8);
-                    llistaAliments.add(new Alimentacio(preuAleatori,nomAleatori,codiBarresAleatori,dataAleatoria));
+                    producte = new Alimentacio(preuAleatori,nomAleatori,codiBarresAleatori,dataAleatoria);
+                    llistaAliments.add((Alimentacio) producte);
                     break;
                 case 2:
                     String composicioAleatoria = composicions.get(random.nextInt(composicions.size()));
                     nomAleatori = nomsTextil.get(random.nextInt(nomsTextil.size()));
                     preuAleatori = random.nextFloat(110);
-                    llistaTextils.add(new Textil(preuAleatori, nomAleatori, codiBarresAleatori, composicioAleatoria));
+                    producte = new Textil(preuAleatori, nomAleatori, codiBarresAleatori, composicioAleatoria);
+                    llistaTextils.add((Textil) producte);
                     break;
                 case 3:
                     int diesGarantiaAleatori = random.nextInt(853);
                     nomAleatori = nomsElectronica.get(random.nextInt(nomsElectronica.size()));
                     preuAleatori = random.nextFloat(3500);
-                    llistaElectronics.add(new Electronica(preuAleatori,nomAleatori,codiBarresAleatori,diesGarantiaAleatori));
+                    producte = new Electronica(preuAleatori,nomAleatori,codiBarresAleatori,diesGarantiaAleatori);
+                    llistaElectronics.add((Electronica) producte);
                     break;
             }
+            llistaProductes.add(producte);
         }
     }
 }
