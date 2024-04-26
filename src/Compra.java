@@ -3,7 +3,6 @@ import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.*;
-import java.util.stream.Stream;
 
 public class Compra {
     private List<Producte> llistaProductes;
@@ -29,7 +28,7 @@ public class Compra {
         System.out.print("Nom producte: ");
         String nomProducte = sc.nextLine();
 
-        if (nomProducte.length() >= 15) registrarLog("El nom no pot superar els 15 caracters");
+        if (nomProducte.length() > 15) registrarLog("El nom no pot superar els 15 caracters");
 
         if (!(nomProducte.matches("[a-zA-Z]+"))) registrarLog("Nom incorrecte: " + nomProducte);
 
@@ -111,19 +110,13 @@ public class Compra {
         electronics.forEach(llistaProductesUnics::add);
 
         if (!llistaProductesUnics.isEmpty()) {
-            System.out.println('\n' + "-".repeat(60));
-            System.out.println(String.format("%35s", "SAPAMERCAT"));
-            System.out.println("-".repeat(60));
-            System.out.println("Data i hora: " + LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss")));
-            System.out.println("L'ha atès: Santi");
-            System.out.println("-".repeat(60));
-            System.out.println(String.format("%1$-30s %2$s %3$10s %4$15s","Nom","Qt","€/u","Total"));
-            System.out.println("-".repeat(60));
+            String dataAvui = LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm"));
+            System.out.println(String.format("\n%1$s\n%2$35s\n%1$s\n%3$39s\n%4$36s\n%5$28s%6$12s\n%7$38s\n%8$38s\n%1$s\n%9$-30s%10$3s%11$11s%12$16s\n%1$s","-".repeat(60),"SAPAMERCAT","C/ VILAR PETIT, 24","17300 BLANES","TELÈFON:","972350909",dataAvui,"L'ha atès: Santi","Nom","Qt","€/u","Total"));
 
             float subtotal = 0;
             for (Producte producte : llistaProductesUnics) {
                 int unitats = 0;
-                float total = 0;
+                float total;
 
                 if (producte instanceof Alimentacio) {
                     unitats = Collections.frequency(llistaAliments, producte);
@@ -134,13 +127,18 @@ public class Compra {
                     unitats = Collections.frequency(llistaElectronics,producte);
                 }
 
-                total = unitats * producte.getPreu();
+                if (unitats > 1) {
+                    total = unitats * producte.getPreu();
+                    System.out.println(String.format("%1$-30s %2$-3d %3$10.2f€ %4$12.2f€",producte.getNom(),unitats,producte.getPreu(),total));
+                } else {
+                    total = producte.getPreu();
+                    System.out.println(String.format("%1$-30s %2$-3d %3$24.2f€",producte.getNom(),unitats,total));
+                }
                 subtotal += total;
 
-                System.out.println(String.format("%1$-30s %2$-3d %3$10.2f€ %4$12.2f€",producte.getNom(),unitats,producte.getPreu(),total));
             }
             System.out.println("-".repeat(60));
-            System.out.println(String.format("Subtotal: %49.2f€",subtotal));
+            System.out.println(String.format("Subtotal: %49.2f€ \n",subtotal));
 
             llistaAliments.clear();
             llistaTextils.clear();
@@ -314,4 +312,5 @@ public class Compra {
             llistaProductes.add(producte);
         }
     }
+
 }

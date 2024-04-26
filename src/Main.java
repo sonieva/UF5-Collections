@@ -5,6 +5,7 @@ import java.util.Scanner;
 public class Main {
     public static void main(String[] args) {
         int op,op2;
+        String op3;
 
         Scanner sc = new Scanner(System.in);
         Compra compra = new Compra();
@@ -48,7 +49,17 @@ public class Main {
                         break;
                     case 2:
                         compra.passarPerCaixa();
-                        op = 0;
+                        do {
+                            System.out.print("Vols continuar comprant? (s/N) ");
+                            op3 = sc.next().toUpperCase();
+                            switch (op3) {
+                                case "N":
+                                    op = 0;
+                                    System.out.println("Adeu, que tinguis un bon dia!");
+                                    break;
+                                default: break;
+                            }
+                        } while (!op3.equals("S") && !op3.equals("N"));
                         break;
                     case 3:
                         compra.mostarCarret();
