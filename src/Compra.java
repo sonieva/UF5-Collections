@@ -12,7 +12,7 @@ public class Compra {
     private List<Electronica> llistaElectronics;
 
     public Compra() {
-        this.llistaProductes = new ArrayList<>();
+        this.llistaProductes = new ArrayList<>(100);
         this.llistaAliments = new ArrayList<>();
         this.llistaTextils = new ArrayList<>();
         this.llistaElectronics = new ArrayList<>();
@@ -111,14 +111,19 @@ public class Compra {
         electronics.forEach(llistaProductesUnics::add);
 
         if (!llistaProductesUnics.isEmpty()) {
-            System.out.println('\n' + "-".repeat(20));
-            System.out.println("SAPAMERCAT");
-            System.out.println("-".repeat(20));
-            System.out.println("Data: " + LocalDate.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
-            System.out.println("-".repeat(20));
+            System.out.println('\n' + "-".repeat(60));
+            System.out.println(String.format("%35s", "SAPAMERCAT"));
+            System.out.println("-".repeat(60));
+            System.out.println("Data i hora: " + LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss")));
+            System.out.println("L'ha atès: Santi");
+            System.out.println("-".repeat(60));
+            System.out.println(String.format("%1$-30s %2$s %3$10s %4$15s","Nom","Qt","€/u","Total"));
+            System.out.println("-".repeat(60));
 
+            float subtotal = 0;
             for (Producte producte : llistaProductesUnics) {
                 int unitats = 0;
+                float total = 0;
 
                 if (producte instanceof Alimentacio) {
                     unitats = Collections.frequency(llistaAliments, producte);
@@ -129,9 +134,13 @@ public class Compra {
                     unitats = Collections.frequency(llistaElectronics,producte);
                 }
 
-                System.out.println(producte.getNom() + "\t\t" + unitats + "\t\t" + producte.getPreu() + "\t\t" + (unitats * producte.getPreu()));
+                total = unitats * producte.getPreu();
+                subtotal += total;
 
+                System.out.println(String.format("%1$-30s %2$-3d %3$10.2f€ %4$12.2f€",producte.getNom(),unitats,producte.getPreu(),total));
             }
+            System.out.println("-".repeat(60));
+            System.out.println(String.format("Subtotal: %49.2f€",subtotal));
 
             llistaAliments.clear();
             llistaTextils.clear();
@@ -240,7 +249,7 @@ public class Compra {
                 "Termòstat", "Barreja", "Proiector", "Auriculars sense fils", "Aparat de fax", "Termòmetre digital", "Videocàmera", "Joc de llums", "Despertador", "Plat giratori", "Humidificador", "Màquina d'espresso",
                 "Smarthome", "Detector de fum", "Termòmetre infraroig", "Estufa elèctrica", "Dispensador d'aigua", "Calefactor", "Radiador", "Estació meteorològica", "Despertador lluminós", "Càmara de seguretat", "Cargol sense fil",
                 "Bafle", "Barreja de so", "Llum LED", "Escrivania elèctrica", "Balança digital", "Vaporitzador", "Mini projector", "Termòstat intel·ligent", "Cafetera intel·ligent", "Cafetera programable", "Estufa intel·ligent",
-                "Control remòt", "Ventilador de taula", "Ventilador de paret", "Ventilador de sostre", "Aire condicionat portàtil", "Aire condicionat de finestra", "Aspiradora sense fils", "Calefactor portàtil", "Mini nevera"
+                "Control remòt", "Ventilador de taula", "Ventilador de paret", "Ventilador de sostre", "Aire condicionat portàtil", "Aire condicionat finestra", "Aspiradora sense fils", "Calefactor portàtil", "Mini nevera"
         ));
         ArrayList<String> composicions = new ArrayList<>(Arrays.asList("Cotó", "Llana", "Seda", "Lli", "Polièster", "Niló", "Viscosa", "Acrílic", "Modal", "Bambú"));
 
@@ -261,7 +270,9 @@ public class Compra {
             for (int j = 0; j <= 6; j++) builderCodiBarres.append(caracters.charAt(random.nextInt(caracters.length())));
             String codiBarresAleatori = builderCodiBarres.toString();
 
-            int tipusProducte = random.nextInt(1,3) + 1;
+            int limit = 3;
+            if (!llistaProductes.isEmpty()) limit++;
+            int tipusProducte = random.nextInt(1,limit) + 1;
 
             Producte producte = null;
             switch (tipusProducte) {
@@ -269,6 +280,7 @@ public class Compra {
                     LocalDate dataAleatoria = LocalDate.of(random.nextInt(3000) + 1,random.nextInt(12) + 1,random.nextInt(28) + 1);
                     nomAleatori = nomsAlimentacio.get(random.nextInt(nomsAlimentacio.size()));
                     preuAleatori = random.nextFloat(8);
+
                     producte = new Alimentacio(preuAleatori,nomAleatori,codiBarresAleatori,dataAleatoria);
                     llistaAliments.add((Alimentacio) producte);
                     break;
@@ -276,6 +288,7 @@ public class Compra {
                     String composicioAleatoria = composicions.get(random.nextInt(composicions.size()));
                     nomAleatori = nomsTextil.get(random.nextInt(nomsTextil.size()));
                     preuAleatori = random.nextFloat(110);
+
                     producte = new Textil(preuAleatori, nomAleatori, codiBarresAleatori, composicioAleatoria);
                     llistaTextils.add((Textil) producte);
                     break;
@@ -283,8 +296,19 @@ public class Compra {
                     int diesGarantiaAleatori = random.nextInt(853);
                     nomAleatori = nomsElectronica.get(random.nextInt(nomsElectronica.size()));
                     preuAleatori = random.nextFloat(3500);
+
                     producte = new Electronica(preuAleatori,nomAleatori,codiBarresAleatori,diesGarantiaAleatori);
                     llistaElectronics.add((Electronica) producte);
+                    break;
+                case 4:
+                    producte = llistaProductes.get(random.nextInt(llistaProductes.size()));
+                    if (producte instanceof Alimentacio) {
+                        llistaAliments.add((Alimentacio) producte);
+                    } else if (producte instanceof Textil) {
+                        llistaTextils.add((Textil) producte);
+                    } else if (producte instanceof Electronica) {
+                        llistaElectronics.add((Electronica) producte);
+                    }
                     break;
             }
             llistaProductes.add(producte);

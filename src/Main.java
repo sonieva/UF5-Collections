@@ -48,6 +48,7 @@ public class Main {
                         break;
                     case 2:
                         compra.passarPerCaixa();
+                        op = 0;
                         break;
                     case 3:
                         compra.mostarCarret();
