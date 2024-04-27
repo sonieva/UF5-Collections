@@ -11,8 +11,8 @@ public class Main {
         Compra compra = new Compra();
 
         try {
+            System.out.println("\nBENVINGUT AL SAPAMERCAT");
             do {
-                System.out.println("\nBENVINGUT AL SAPAMERCAT");
                 System.out.println("-".repeat(15));
                 System.out.println("-".repeat(4) + " INICI " + "-".repeat(4));
                 System.out.println("-".repeat(15));
@@ -49,15 +49,14 @@ public class Main {
                         break;
                     case 2:
                         compra.passarPerCaixa();
+                        sc.useDelimiter("\\n");
                         do {
                             System.out.print("Vols continuar comprant? (s/N) ");
                             op3 = sc.next().toUpperCase();
-                            switch (op3) {
-                                case "N":
-                                    op = 0;
-                                    System.out.println("Adeu, que tinguis un bon dia!");
-                                    break;
-                                default: break;
+                            if (op3.equals("N") || op3.isEmpty()) {
+                                op = 0;
+                                System.out.println("Adeu, que tinguis un bon dia!");
+                                break;
                             }
                         } while (!op3.equals("S") && !op3.equals("N"));
                         break;

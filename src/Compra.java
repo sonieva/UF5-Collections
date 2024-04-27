@@ -25,7 +25,7 @@ public class Compra {
         Scanner sc = new Scanner(System.in);
         System.out.println("\nAfegir " + tipusProducte);
 
-        System.out.print("Nom producte: ");
+        System.out.print("Nom producte (15 caracters max.): ");
         String nomProducte = sc.nextLine();
 
         if (nomProducte.length() > 15) registrarLog("El nom no pot superar els 15 caracters");
@@ -60,6 +60,8 @@ public class Compra {
                 LocalDate dataCaducitat = null;
                 try {
                     dataCaducitat = LocalDate.parse(data, DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+                    if (dataCaducitat.isBefore(LocalDate.now())) registrarLog("La data introduida no pot ser abans de la data actual");
+
                 } catch (DateTimeParseException e) {
                     registrarLog("Data introduida incorrecte: " + data);
                 }
@@ -85,6 +87,7 @@ public class Compra {
                 int diesGarantia = 0;
                 try {
                     diesGarantia = Integer.parseInt(diesString);
+                    if (diesGarantia < 0) registrarLog("Els dies de garantia no poden ser inferiors a 0");
                 } catch (NumberFormatException e) {
                     registrarLog("Dies de garantia incorrecte: " + diesString);
                 }
@@ -111,7 +114,15 @@ public class Compra {
 
         if (!llistaProductesUnics.isEmpty()) {
             String dataAvui = LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm"));
-            System.out.println(String.format("\n%1$s\n%2$35s\n%1$s\n%3$39s\n%4$36s\n%5$28s%6$12s\n%7$38s\n%8$38s\n%1$s\n%9$-30s%10$3s%11$11s%12$16s\n%1$s","-".repeat(60),"SAPAMERCAT","C/ VILAR PETIT, 24","17300 BLANES","TELÈFON:","972350909",dataAvui,"L'ha atès: Santi","Nom","Qt","€/u","Total"));
+            String separador = "-".repeat(60);
+
+            System.out.println('\n' + separador);
+            System.out.println(String.format("%35s","SAPAMERCAT"));
+            System.out.println(separador);
+            System.out.println(String.format("%1$39s\n%2$36s\n%3$28s%4$12s\n%5$38s\n%6$38s","C/ VILAR PETIT, 24","17300 BLANES","TELÈFON:","972350909",dataAvui,"L'ha atès: Santi"));
+            System.out.println(separador);
+            System.out.println(String.format("%1$-30s %2$2s %3$10s %4$15s","Nom","Qt","€/u","Total"));
+            System.out.println(separador);
 
             float subtotal = 0;
             for (Producte producte : llistaProductesUnics) {
@@ -151,7 +162,13 @@ public class Compra {
         Map<String, Integer> carret = new HashMap<>();
 
         if (!llistaProductes.isEmpty()) {
-            System.out.println("\nCarret\n");
+            String separador = "-".repeat(34);
+
+            System.out.println('\n' + separador);
+            System.out.println(String.format("%20s","Carret"));
+            System.out.println(separador);
+            System.out.println(String.format("%1$-24s %2$s","Nom","Quantitat"));
+            System.out.println(separador);
 
             for (Producte producte : llistaProductes) {
                 if (carret.containsKey(producte.getCodiBarres())) {
@@ -161,8 +178,11 @@ public class Compra {
                 }
             }
 
-            carret.forEach((k, v) -> System.out.println(buscarProducte(k) + ": " + v));
+            carret.forEach((k, v) -> System.out.println(String.format("%1$-27s %2$6d",buscarProducte(k),v)));
+            System.out.println(separador);
+            System.out.println(String.format("%1$-27s %2$6d\n","Total productes unics:",carret.size()));
             carret.clear();
+
         } else registrarLog("El carret no pot estar buit");
     }
 
