@@ -2,15 +2,15 @@ import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 
 public class Alimentacio extends Producte {
-    private LocalDate dataCaducitat;
+    private final LocalDate DATACADUCITAT;
 
     public Alimentacio(float preu, String nom, String codiBarres, LocalDate dataCaducitat) {
         super(preu, nom, codiBarres);
-        this.dataCaducitat = dataCaducitat;
+        this.DATACADUCITAT = dataCaducitat;
     }
 
     public LocalDate getDataCaducitat() {
-        return dataCaducitat;
+        return DATACADUCITAT;
     }
 
     @Override

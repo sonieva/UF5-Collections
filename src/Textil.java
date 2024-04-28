@@ -1,15 +1,15 @@
 import java.util.Objects;
 
 public class Textil extends Producte implements Comparable<Textil> {
-    private String composicio;
+    private final String COMPOSICIO;
 
     public Textil(float preu, String nom, String codiBarres, String composicio) {
         super(preu, nom, codiBarres);
-        this.composicio = composicio;
+        this.COMPOSICIO = composicio;
     }
 
     public String getComposicio() {
-        return composicio;
+        return COMPOSICIO;
     }
 
     @Override

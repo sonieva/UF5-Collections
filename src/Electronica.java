@@ -1,13 +1,13 @@
 public class Electronica extends Producte {
-    private int diesGarantia;
+    private final int DIESGARANTIA;
 
     public Electronica(float preu, String nom, String codiBarres, int diesGarantia) {
         super(preu, nom, codiBarres);
-        this.diesGarantia = diesGarantia;
+        this.DIESGARANTIA = diesGarantia;
     }
 
     public int getDiesGarantia() {
-        return diesGarantia;
+        return DIESGARANTIA;
     }
 
     @Override

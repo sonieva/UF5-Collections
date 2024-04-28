@@ -11,10 +11,10 @@ public class Compra {
     private List<Electronica> llistaElectronics;
 
     public Compra() {
-        this.llistaProductes = new ArrayList<>(100);
-        this.llistaAliments = new ArrayList<>();
-        this.llistaTextils = new ArrayList<>();
-        this.llistaElectronics = new ArrayList<>();
+        this.llistaProductes = new ArrayList<Producte>(100);
+        this.llistaAliments = new ArrayList<Alimentacio>();
+        this.llistaTextils = new ArrayList<Textil>();
+        this.llistaElectronics = new ArrayList<Electronica>();
     }
 
     public void afegirProducte(String tipusProducte) throws Exception {
