@@ -126,16 +126,13 @@ public class Compra {
 
             float subtotal = 0;
             for (Producte producte : llistaProductesUnics) {
-                int unitats = 0;
+                int unitats;
                 float total;
 
-                if (producte instanceof Alimentacio) {
-                    unitats = Collections.frequency(llistaAliments, producte);
-                } else if (producte instanceof Textil) {
+                unitats = Collections.frequency(llistaProductes,producte);
+
+                if (producte instanceof Textil) {
                     comprovarPreuTextil(producte);
-                    unitats = Collections.frequency(llistaTextils,producte);
-                } else if (producte instanceof Electronica) {
-                    unitats = Collections.frequency(llistaElectronics,producte);
                 }
 
                 if (unitats > 1) {
@@ -151,6 +148,7 @@ public class Compra {
             System.out.println("-".repeat(60));
             System.out.println(String.format("Subtotal: %49.2f€ \n",subtotal));
 
+            llistaProductes.clear();
             llistaAliments.clear();
             llistaTextils.clear();
             llistaElectronics.clear();
@@ -183,7 +181,7 @@ public class Compra {
             System.out.println(String.format("%1$-27s %2$6d\n","Total productes unics:",carret.size()));
             carret.clear();
 
-        } else registrarLog("El carret no pot estar buit");
+        } else System.out.println("El carret esta buit!");
     }
 
     private String buscarProducte(String codiBarres) {
@@ -215,7 +213,7 @@ public class Compra {
             }
 
         } catch (FileNotFoundException e) {
-            registrarLog("L'arxiu de preus de textil no s'ha trobat");
+            registrarLog("L'arxiu de preus dels productes textils no s'ha trobat");
         }
     }
 
@@ -231,7 +229,7 @@ public class Compra {
             try {
                 arxiuLogs.createNewFile();
             } catch (IOException e) {
-                throw new RuntimeException(e);
+                throw new Exception("Ha ocurregut un error a l'hora de crear el fitxer de logs");
             }
         } while (!arxiuLogs.exists());
 
@@ -241,7 +239,7 @@ public class Compra {
             escritorArxiuLogs.close();
             throw new Exception("S'ha produit un error. Revisa el fitxer de logs");
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new Exception("Ha ocurregut un error a l'hora de escriure en el fitxer de logs");
         }
     }
 
@@ -271,11 +269,10 @@ public class Compra {
         ));
         ArrayList<String> composicions = new ArrayList<>(Arrays.asList("Cotó", "Llana", "Seda", "Lli", "Polièster", "Niló", "Viscosa", "Acrílic", "Modal", "Bambú"));
 
-        Random random = new Random();
         String nomAleatori;
         float preuAleatori;
         String caracters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-        int midaCarret = llistaAliments.size() + llistaTextils.size() + llistaElectronics.size();
+        int midaCarret = llistaProductes.size();
 
         if (midaCarret == 100) {
             registrarLog("No es poden afegir mes de 100 productes");
@@ -283,6 +280,7 @@ public class Compra {
 
         System.out.println("Omplint carret");
 
+        Random random = new Random();
         for (int i = 0; i < (100 - midaCarret); i++) {
             StringBuilder builderCodiBarres = new StringBuilder();
             for (int j = 0; j <= 6; j++) builderCodiBarres.append(caracters.charAt(random.nextInt(caracters.length())));
