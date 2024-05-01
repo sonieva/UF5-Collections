@@ -6,7 +6,8 @@ Practica final de la UF5 del M03 de 1r de DAW
 ### Producte
 Classe abstracte pare de les subclasses Alimentacio, Textil i Electronica
 #### Constructor
-````java public Producte(float preu, String nom, String codiBarres) {  
+````java
+public Producte(float preu, String nom, String codiBarres) {  
     this.preu = preu;  
     this.nom = nom;  
     this.CODIBARRES = codiBarres;  
